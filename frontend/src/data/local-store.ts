@@ -54,6 +54,11 @@ export function resetRows(key: string): EntryRow[] {
   return rows
 }
 
+// 多标签页各自缓存：交换批次这类跨终端幂等判断，落库前先强制重读，避免看到旧缓存。
+export function reloadRows(): void {
+  cache = readStorage()
+}
+
 export function storageKey(): string {
   return STORAGE_KEY
 }

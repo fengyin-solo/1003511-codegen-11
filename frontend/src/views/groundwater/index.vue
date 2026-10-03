@@ -7,6 +7,7 @@
       </div>
       <div class="page-actions">
         <button class="btn primary" type="button" @click="openCreate">登记地下水观测记录</button>
+        <RouterLink class="btn" to="/groundwater/exchange">成井档案交换台</RouterLink>
         <button class="btn" type="button" @click="exportRows">导出地下水观测清单</button>
       </div>
     </header>

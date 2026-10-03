@@ -11,6 +11,7 @@ const Telemetry = () => import('@/views/telemetry/index.vue')
 const Compilation = () => import('@/views/compilation/index.vue')
 const Warning = () => import('@/views/warning/index.vue')
 const Groundwater = () => import('@/views/groundwater/index.vue')
+const GroundwaterExchange = () => import('@/views/groundwater/exchange.vue')
 const Evaporation = () => import('@/views/evaporation/index.vue')
 const Cableway = () => import('@/views/cableway/index.vue')
 const Sediment = () => import('@/views/sediment/index.vue')
@@ -34,6 +35,7 @@ const router = createRouter({
     { path: '/compilation', name: 'compilation', component: Compilation },
     { path: '/warning', name: 'warning', component: Warning },
     { path: '/groundwater', name: 'groundwater', component: Groundwater },
+    { path: '/groundwater/exchange', name: 'groundwater-exchange', component: GroundwaterExchange },
     { path: '/evaporation', name: 'evaporation', component: Evaporation },
     { path: '/cableway', name: 'cableway', component: Cableway },
     { path: '/sediment', name: 'sediment', component: Sediment },

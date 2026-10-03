@@ -7,6 +7,7 @@
       </div>
       <div class="page-actions">
         <button class="btn primary" type="button" @click="openCreate">登记巡检记录</button>
+        <button class="btn" type="button" @click="runGapCheck">观测缺口核查</button>
         <button class="btn" type="button" @click="exportRows">导出巡检记录清单</button>
       </div>
     </header>
@@ -65,6 +66,7 @@
 
     <footer class="page-foot">
       <span>共 {{ total }} 条巡检记录记录</span>
+      <span v-if="notice" class="notice-text">{{ notice }}</span>
       <span v-if="errorMessage" class="error-text">{{ errorMessage }}</span>
     </footer>
   </section>
@@ -79,6 +81,7 @@ import {
   moduleMeta,
   runAction as applyAction,
 } from '@/api/local-service'
+import { ensureGapCheckTodos } from '@/api/well-archive-service'
 import type { EntryRow } from '@/data/types'
 
 const meta = moduleMeta('inspection')
@@ -90,6 +93,7 @@ const stats = [{"label": "本月巡检次数", "value": 0}, {"label": "已巡检
 const rows = ref<EntryRow[]>([])
 const total = ref(0)
 const errorMessage = ref('')
+const notice = ref('')
 const filters = ref<Record<string, string>>({})
 const filterFields = columns.slice(0, 3)
 const statusSummary = computed(() =>
@@ -110,6 +114,19 @@ function exportRows() {
 
 function openCreate() {
   errorMessage.value = '巡检记录登记入口尚未接入审批流'
+}
+
+// 其它入口的观测缺口核查：扫描成井档案的缺口井点，缺口的登记成巡检待办，按井点去重。
+async function runGapCheck() {
+  errorMessage.value = ''
+  notice.value = ''
+  try {
+    const added = await ensureGapCheckTodos()
+    notice.value = added > 0 ? `已新增 ${added} 项观测缺口核查待办` : '缺口井点都已在待办里，没有新增'
+  } catch (error) {
+    errorMessage.value = error instanceof Error ? error.message : '观测缺口核查失败'
+  }
+  reload()
 }
 
 function runAction(action: string, row: EntryRow) {
