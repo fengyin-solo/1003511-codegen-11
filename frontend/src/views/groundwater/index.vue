@@ -6,6 +6,7 @@
         <p class="page-desc">维护地下水观测记录，围绕记录编号、井点编号、观测日期、埋深值做登记、筛选与状态流转。</p>
       </div>
       <div class="page-actions">
+        <RouterLink class="btn primary" to="/groundwater/exchange">成井档案交换台</RouterLink>
         <button class="btn primary" type="button" @click="openCreate">登记地下水观测记录</button>
         <button class="btn" type="button" @click="exportRows">导出地下水观测清单</button>
       </div>

@@ -79,8 +79,11 @@ import {
   moduleMeta,
   runAction as applyAction,
 } from '@/api/local-service'
+import { createInspectionTodo, GAP_CHECK_ITEM } from '@/api/exchange-service'
+import { useSessionStore } from '@/stores/session'
 import type { EntryRow } from '@/data/types'
 
+const session = useSessionStore()
 const meta = moduleMeta('inspection')
 const columns = ["记录编号", "站点编号", "巡检日期", "巡检人员", "检查项目", "发现问题", "处理措施", "巡检状态"]
 const actions = ["完成巡检", "报告故障", "确认处置"]
@@ -109,7 +112,20 @@ function exportRows() {
 }
 
 function openCreate() {
-  errorMessage.value = '巡检记录登记入口尚未接入审批流'
+  // 巡检待办统一入口：检查项目固定带上「观测缺口核查」，覆盖本页及其他业务入口。
+  const stationNo = window.prompt('请输入巡检站点编号', 'GW-001')
+  if (stationNo === null) return
+  const extraInput = window.prompt('除「观测缺口核查」外是否追加检查项目（可留空）', '')
+  if (extraInput === null) return
+  const extra = extraInput.trim() ? extraInput.split(/[；;、]/).map((item) => item.trim()).filter(Boolean) : []
+  const todo = createInspectionTodo({
+    stationNo: stationNo.trim(),
+    inspector: session.operator,
+    extraItems: extra,
+  })
+  errorMessage.value = ''
+  reload()
+  window.alert(`巡检待办 ${todo.记录编号} 已生成，检查项目：${GAP_CHECK_ITEM}`)
 }
 
 function runAction(action: string, row: EntryRow) {
